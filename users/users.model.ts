@@ -45,18 +45,23 @@ const userSchema = new mongoose.Schema({
         }
     }
 });
-/*
+
 userSchema.pre<User>('save', function (next){
-    const user : User = this;   
+    console.log('this ',this);
+    const user : User = this;
+    console.log('user ',this); 
     if(!user.isModified('password')){
-        next()
+        next();
     }else{
+        console.log('else ',this); 
         bcrypt.hash(user.password, enviroment.security.saltRounds,  (err, password)=>{
+            console.log('err ',err)
             user.password = password;
+            next();
         })
      //   user.password = 
     }
-});*/
+});
 
 
 export const User = mongoose.model<User>('User', userSchema);
