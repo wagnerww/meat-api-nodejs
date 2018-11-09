@@ -1,9 +1,9 @@
 "# meat-api-nodejs" 
 
-### NPM INSTALL
+### EXEUCTAR NPM INSTALL
 
 ### PARA TRANSPILAR:
-tsc;
+tsc
 
 ### PARA RODAR
 node dist\main.js

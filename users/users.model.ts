@@ -1,12 +1,16 @@
 import * as mongoose from 'mongoose';
 import {enumGender} from './users.enum';
 import {validateCPF} from '../common/validators';
+import * as bcrypt from 'bcrypt-nodejs';
+import { enviroment } from '../common/environment';
 
 export interface User extends mongoose.Document {
     name:string,
     email:string,
     password:string
 }
+
+const user: User = this;
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -41,6 +45,18 @@ const userSchema = new mongoose.Schema({
         }
     }
 });
+/*
+userSchema.pre<User>('save', function (next){
+    const user : User = this;   
+    if(!user.isModified('password')){
+        next()
+    }else{
+        bcrypt.hash(user.password, enviroment.security.saltRounds,  (err, password)=>{
+            user.password = password;
+        })
+     //   user.password = 
+    }
+});*/
 
 
 export const User = mongoose.model<User>('User', userSchema);
