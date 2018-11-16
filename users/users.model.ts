@@ -46,6 +46,8 @@ const userSchema = new mongoose.Schema({
     }
 });
 
+
+/*
 userSchema.pre<User>('save', function (next){
     console.log('this ',this);
     const user : User = this;
@@ -61,7 +63,39 @@ userSchema.pre<User>('save', function (next){
         })
      //   user.password = 
     }
-});
+});*/
 
+const hashPassword = (obj, next) => {    
+  /*  bcrypt.hash(obj.password, enviroment.security.saltRounds, function (err, password){
+        console.log('err ',err)
+        user.password = password;
+        next();
+    })*/
+    console.log('obj ',obj);
+    let password:string = obj.password + "_1234";
+    user.password = password;
+    next();
+}
+
+const saveMiddleware = function (next){
+    const user:User = this;
+    if(!user.isModified('password')){
+        next();
+    } else {
+        hashPassword(user, next);
+    }
+}
+
+const updateMiddleware = function (next){
+    if(!this.getUpdate().password){
+        next();
+    } else {
+        hashPassword(this.getUpdate(), next);
+    }
+}
+
+userSchema.pre<User>('save', saveMiddleware);
+userSchema.pre('findOneAndUpdate', updateMiddleware);
+userSchema.pre('update', updateMiddleware);
 
 export const User = mongoose.model<User>('User', userSchema);
