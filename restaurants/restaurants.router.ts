@@ -10,6 +10,30 @@ class RestaurantsRouter extends ModelRouter<Restaurant>{
         super(Restaurant);       
     }
 
+    findMenu = (req, resp, next) => {
+        Restaurant.findById(req.params.id, "+menu").then(rest => {
+            if(!rest){
+                throw new NotFoundError('Restaurant not found');
+            } else {
+                resp.json(rest.menu)
+                return next()
+            }
+        }).catch(next);
+    }
+
+    replaceMenu = (req, resp, next) => {
+       Restaurant.findById(req.params.id).then(rest => {
+            if(!rest){
+                throw new NotFoundError('Restaurant not found');
+            } else {
+               rest.menu = req.body;
+               return rest.save();             
+            }
+        }).then(rest => {
+
+        }).catch(next);
+    }
+
     applyRoutes(application: restify.Server){
         application.get('/restaurants', this.findAll);
         application.get('/restaurants/:id', [this.validateId, this.findById]);
